@@ -2,6 +2,9 @@ package roomescape.controller;
 
 import static org.hamcrest.core.Is.is;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -21,7 +24,12 @@ class AdminReservationControllerTest {
 
     @BeforeEach
     void setUp() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberId", 1L);
+
         this.sessionId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
                 .when().post("/login")
                 .then()
                 .extract()

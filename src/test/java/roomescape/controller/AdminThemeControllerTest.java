@@ -21,7 +21,12 @@ class AdminThemeControllerTest {
 
     @BeforeEach
     void setUp() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("memberId", 1L);
+
         this.sessionId = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
                 .when().post("/login")
                 .then()
                 .extract()
