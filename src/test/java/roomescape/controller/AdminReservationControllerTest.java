@@ -41,6 +41,7 @@ class AdminReservationControllerTest {
     void 관리자_예약_조회_API() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .when().get("/admin/reservations")
                 .then().log().all()
                 .statusCode(200)

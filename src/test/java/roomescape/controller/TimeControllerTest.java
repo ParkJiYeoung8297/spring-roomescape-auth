@@ -46,6 +46,7 @@ class TimeControllerTest {
 
         RestAssured.given().log().all()
                .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                .body(params)
                .when().post("/admin/times")
                .then().log().all()
@@ -74,6 +75,7 @@ class TimeControllerTest {
     void 예약_시간_조회_API() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .when().get("/admin/times")
                 .then().log().all()
                 .statusCode(200)
@@ -94,6 +96,7 @@ class TimeControllerTest {
 
         final long id = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/admin/times")
                 .then().log().all()
@@ -105,12 +108,14 @@ class TimeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .when().delete("/admin/times/" + id)
                 .then().log().all()
                 .statusCode(204);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .when().get("/admin/times")
                 .then().log().all()
                 .statusCode(200)

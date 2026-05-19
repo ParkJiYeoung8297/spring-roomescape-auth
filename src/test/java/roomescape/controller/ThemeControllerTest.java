@@ -58,6 +58,7 @@ class ThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .params(params)
                 .when().get("/themes")
                 .then().log().all()
@@ -74,6 +75,7 @@ class ThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .pathParam("id", 1)
                 .queryParam("date", "2026-04-29")
                 .when().get("/themes/{id}/available-times")
@@ -106,6 +108,7 @@ class ThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .pathParam("id", 1)
                 .queryParam("date", "2026-04-29")
                 .when().get("/themes/{id}/available-times")

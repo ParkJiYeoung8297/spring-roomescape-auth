@@ -48,6 +48,7 @@ public class MissionStepTest {
         final String location = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
+                .sessionId(sessionId)
                 .when().post("/admin/times")
                 .then().log().all()
                 .statusCode(201)

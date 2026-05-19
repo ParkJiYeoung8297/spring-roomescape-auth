@@ -43,6 +43,7 @@ class AdminThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/admin/themes")
                 .then().log().all()
@@ -59,6 +60,7 @@ class AdminThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/admin/themes")
                 .then().log().all()
@@ -76,6 +78,7 @@ class AdminThemeControllerTest {
 
         final String location = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/admin/themes")
                 .then().log().all()
@@ -87,6 +90,7 @@ class AdminThemeControllerTest {
 
         RestAssured.given().log().all()
                 .pathParam("id", id)
+                .sessionId(sessionId)
                 .when().delete("/admin/themes/{id}")
                 .then().log().all()
                 .statusCode(204);
@@ -97,6 +101,7 @@ class AdminThemeControllerTest {
     void 관리자_테마_삭제_API_예외() {
 
         RestAssured.given().log().all()
+                .sessionId(sessionId)
                 .pathParam("id", 1)
                 .when().delete("/admin/themes/{id}")
                 .then().log().all()
