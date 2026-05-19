@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.constraints.NotBlank;
+import roomescape.config.LoginMember;
+import roomescape.domain.Member;
 import roomescape.dto.AvailableTimeResponse;
 import roomescape.dto.ThemeResponse;
 import roomescape.service.ThemeService;
@@ -37,6 +39,7 @@ public class ThemeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/popular")
     public List<ThemeResponse> getPopularThemes(
+            @LoginMember Member member,
             @RequestParam(defaultValue = "10") int size) {
         LocalDate today = LocalDate.now();
         return themeService.getPopularThemes(today, size);
@@ -45,6 +48,7 @@ public class ThemeController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/available-times")
     public List<AvailableTimeResponse> getReservationTimes(
+            @LoginMember Member member,
             @PathVariable long id,
             @NotBlank(message = "날짜를 입력해주세요.")
             @RequestParam String date) {

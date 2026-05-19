@@ -29,7 +29,10 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                         "/times/**",
                         "/admin/**",
                         "/reservations/**",
-                        "reservations"
+                        "reservations",
+                        "/index.html",
+                        "/user.html",
+                        "/"
                 );
 
     }

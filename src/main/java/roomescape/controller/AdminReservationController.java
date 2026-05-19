@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import roomescape.config.LoginMember;
+import roomescape.domain.Member;
 import roomescape.dto.AdminReservationResponse;
 import roomescape.service.AdminReservationService;
 
@@ -21,7 +24,7 @@ public class AdminReservationController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<AdminReservationResponse> getAllReservations() {
+    public List<AdminReservationResponse> getAllReservations(@LoginMember Member member) {
         return adminReservationService.getAllReservations();
     }
 

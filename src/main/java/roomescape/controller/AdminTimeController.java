@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import roomescape.config.LoginMember;
+import roomescape.domain.Member;
 import roomescape.dto.TimeRequest;
 import roomescape.dto.TimeResponse;
 import roomescape.service.AdminTimeService;
@@ -37,7 +39,9 @@ public class AdminTimeController {
     }
 
     @PostMapping
-    public ResponseEntity<TimeResponse> createTime(@Valid @RequestBody TimeRequest request) {
+    public ResponseEntity<TimeResponse> createTime(
+            @LoginMember Member member,
+            @Valid @RequestBody TimeRequest request) {
         final TimeResponse response = adminTimeService.save(request);
         final URI location = URI.create("/times/" + response.id());
         return ResponseEntity.created(location).body(response);

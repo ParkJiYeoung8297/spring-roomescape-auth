@@ -56,6 +56,7 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ReservationResponse getReservation(
+            @LoginMember Member member,
             @PathVariable long id
     ) {
         return reservationService.findById(id);
@@ -64,6 +65,7 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<ReservationResponse> getReservations(
+            @LoginMember Member member,
             @RequestParam String username) {
         return reservationService.findAllByName(username);
     }
@@ -71,6 +73,7 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/{reservationId}")
     public void updateReservation(
+            @LoginMember Member member,
             @PathVariable long reservationId,
             @Valid @RequestBody ReservationUpdateRequest request
     ) {
@@ -80,7 +83,9 @@ public class ReservationController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteReservation(@PathVariable Long id) {
+    public void deleteReservation(
+            @LoginMember Member member,
+            @PathVariable Long id) {
         LocalDateTime now = LocalDateTime.now();
         reservationService.delete(now, id);
     }

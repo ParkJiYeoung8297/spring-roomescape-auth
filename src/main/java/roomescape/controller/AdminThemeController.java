@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import roomescape.config.LoginMember;
+import roomescape.domain.Member;
 import roomescape.dto.ThemeRequest;
 import roomescape.service.AdminThemeService;
 
@@ -28,7 +30,9 @@ public class AdminThemeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTheme(@Valid @RequestBody ThemeRequest themeRequest) {
+    public ResponseEntity<Void> createTheme(
+            @LoginMember Member member,
+            @Valid @RequestBody ThemeRequest themeRequest) {
         Long themeId = adminThemeService.save(themeRequest);
         URI location = URI.create("/themes/" + themeId);
         return ResponseEntity.created(location).build();

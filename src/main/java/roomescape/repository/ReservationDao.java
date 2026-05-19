@@ -79,7 +79,7 @@ public class ReservationDao {
                 FROM reservation AS r
                 INNER JOIN reservation_time AS t ON r.time_id = t.id
                 INNER JOIN theme AS th ON r.theme_id = th.id
-                Where r.id = ?
+                WHERE r.member_id = ?
                 """;
         return jdbcTemplate.query(sql, reservationRowMapper,id);
     }
