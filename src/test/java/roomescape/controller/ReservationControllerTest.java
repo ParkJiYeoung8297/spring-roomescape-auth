@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,6 +24,16 @@ import io.restassured.http.ContentType;
 class ReservationControllerTest {
     @Autowired
     private ReservationController reservationController;
+    private String sessionId;
+
+    @BeforeEach
+    void setUp() {
+        this.sessionId = RestAssured.given()
+                .when().post("/login")
+                .then()
+                .extract()
+                .sessionId();
+    }
 
     @DisplayName("사용자 예약 추가 API")
     @Test
@@ -35,6 +47,7 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
@@ -52,6 +65,7 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
@@ -70,6 +84,7 @@ class ReservationControllerTest {
 
         final long id = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
@@ -80,6 +95,7 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .pathParam("id", id)
                 .when().delete("/reservations/{id}")
                 .then().log().all()
@@ -91,6 +107,7 @@ class ReservationControllerTest {
     void 사용자_예약_조회_API() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .queryParam("username", "김철수")
                 .when().get("/reservations")
                 .then().log().all()
@@ -114,6 +131,7 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
@@ -133,10 +151,23 @@ class ReservationControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/reservations")
                 .then().log().all()
                 .statusCode(400);
+    }
+
+    @DisplayName("나의 예약 조회 API")
+    @Test
+    void 나의_예약_조회_API() {
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .sessionId(sessionId)
+                .queryParam("userId", "1")
+                .when().get("/reservations/mine")
+                .then().log().all()
+                .statusCode(200);
     }
 
 }

@@ -9,6 +9,8 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +24,16 @@ public class MissionStepTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    private String sessionId;
+
+    @BeforeEach
+    void setUp() {
+        this.sessionId = RestAssured.given()
+                .when().post("/login")
+                .then()
+                .extract()
+                .sessionId();
+    }
 
     @Test
     void 시간_관리_API() {
@@ -63,6 +75,7 @@ public class MissionStepTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(reservation)
                 .when().post("/reservations")
                 .then().log().all()
@@ -70,6 +83,7 @@ public class MissionStepTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .queryParam("username", "브라운")
                 .when().get("/reservations")
                 .then().log().all()

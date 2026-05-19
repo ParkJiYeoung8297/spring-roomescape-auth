@@ -24,7 +24,7 @@ class ReservationTest {
 
     @Test
     void 예약_생성() {
-        Reservation reservation = new Reservation(1L, "브라운", LocalDate.of(2023, 8, 5), time, theme);
+        Reservation reservation = new Reservation(1L, 2L,"브라운", LocalDate.of(2023, 8, 5), time, theme);
         assertThat(reservation.getId()).isEqualTo(1L);
         assertThat(reservation.getName()).isEqualTo("브라운");
         assertThat(reservation.getDate()).isEqualTo(LocalDate.of(2023, 8, 5));
@@ -35,7 +35,7 @@ class ReservationTest {
     void 이름이_null이면_예외() {
         Time time = new Time(1L, LocalTime.of(15, 40));
 
-        assertThatThrownBy(() -> new Reservation(1L, null, LocalDate.of(2023, 8, 5), time, theme))
+        assertThatThrownBy(() -> new Reservation(1L, 2L,null, LocalDate.of(2023, 8, 5), time, theme))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -43,7 +43,7 @@ class ReservationTest {
     void 이름이_공백이면_예외() {
         Time time = new Time(1L, LocalTime.of(15, 40));
 
-        assertThatThrownBy(() -> new Reservation(1L, "   ", LocalDate.of(2023, 8, 5), time, theme))
+        assertThatThrownBy(() -> new Reservation(1L, 2L,"   ", LocalDate.of(2023, 8, 5), time, theme))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -51,13 +51,13 @@ class ReservationTest {
     void 날짜가_null이면_예외() {
         Time time = new Time(1L, LocalTime.of(15, 40));
 
-        assertThatThrownBy(() -> new Reservation(1L, "브라운", null, time, theme))
+        assertThatThrownBy(() -> new Reservation(1L, 2L,"브라운", null, time, theme))
                 .isInstanceOf(CustomException.class);
     }
 
     @Test
     void 시간이_null이면_예외() {
-        assertThatThrownBy(() -> new Reservation(1L, "브라운", LocalDate.of(2023, 8, 5), null, theme))
+        assertThatThrownBy(() -> new Reservation(1L, 2L,"브라운", LocalDate.of(2023, 8, 5), null, theme))
                 .isInstanceOf(CustomException.class);
     }
 }

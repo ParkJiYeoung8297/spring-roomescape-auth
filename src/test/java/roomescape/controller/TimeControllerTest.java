@@ -8,6 +8,8 @@ import io.restassured.http.ContentType;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,17 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class TimeControllerTest {
+
+    private String sessionId;
+
+    @BeforeEach
+    void setUp() {
+        this.sessionId = RestAssured.given()
+                .when().post("/login")
+                .then()
+                .extract()
+                .sessionId();
+    }
 
     @DisplayName("예약 시간 등록 API")
     @Test
@@ -44,6 +57,7 @@ class TimeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .body(params)
                 .when().post("/admin/times")
                 .then().log().all()

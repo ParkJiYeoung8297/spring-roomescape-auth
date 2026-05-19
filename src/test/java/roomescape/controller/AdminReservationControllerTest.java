@@ -4,6 +4,8 @@ import static org.hamcrest.core.Is.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +16,17 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class AdminReservationControllerTest {
+
+    private String sessionId;
+
+    @BeforeEach
+    void setUp() {
+        this.sessionId = RestAssured.given()
+                .when().post("/login")
+                .then()
+                .extract()
+                .sessionId();
+    }
 
     @DisplayName("모든 사용자의 예약 내역이 모두 조회되어야한다.")
     @Test

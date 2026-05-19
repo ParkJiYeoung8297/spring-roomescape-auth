@@ -31,7 +31,7 @@ class ReservationServiceTest {
     void 예약_정상_테스트() {
         LocalDateTime mockToday = LocalDateTime.now();
         ReservationRequest request = new ReservationRequest("김철수", mockToday.toLocalDate().plusDays(1), 1L, 1L);
-        assertThatCode(() -> reservationService.save(mockToday, request)).doesNotThrowAnyException();
+        assertThatCode(() -> reservationService.save(2L, mockToday, request)).doesNotThrowAnyException();
     }
 
     @DisplayName("지나간 날짜·시간에 대한 예약 생성은 불가능하다.")
@@ -39,7 +39,7 @@ class ReservationServiceTest {
     void 지나간_날짜_예약_예외_테스트() {
         LocalDateTime now = LocalDateTime.now();
         ReservationRequest request = new ReservationRequest("김철수", now.toLocalDate().minusDays(1), 1L, 1L);
-        assertThatThrownBy(() -> reservationService.save(now, request))
+        assertThatThrownBy(() -> reservationService.save(2L, now, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.PAST_DATE_RESERVATION.getMessage());
     }
@@ -50,7 +50,7 @@ class ReservationServiceTest {
         LocalDateTime mockToday= LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
 
         ReservationRequest request = new ReservationRequest("김철수", mockToday.toLocalDate(), 1L, 1L);
-        assertThatThrownBy(() -> reservationService.save(mockToday, request))
+        assertThatThrownBy(() -> reservationService.save(2L, mockToday, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.PAST_DATE_RESERVATION.getMessage());
     }
@@ -70,9 +70,9 @@ class ReservationServiceTest {
         LocalDateTime today= LocalDateTime.now();
 
         ReservationRequest request = new ReservationRequest("김철수", today.toLocalDate().plusDays(2), 2L, 1L);
-        reservationService.save(today, request);
+        reservationService.save(2L, today, request);
 
-        assertThatThrownBy(() -> reservationService.save(today, request))
+        assertThatThrownBy(() -> reservationService.save(2L, today, request))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorCode.DUPLICATE_RESERVATION.getMessage());
     }
@@ -86,8 +86,8 @@ class ReservationServiceTest {
         ReservationRequest request2 = new ReservationRequest("박지영", today.plusDays(3), 2L, 1L);
         ReservationUpdateRequest reservationRequest = new ReservationUpdateRequest(today.plusDays(3), 2L);
 
-        ReservationResponse response = reservationService.save(now, request);
-        reservationService.save(now , request2);
+        ReservationResponse response = reservationService.save(2L, now, request);
+        reservationService.save(2L, now , request2);
 
         assertThatThrownBy(() -> reservationService.update(response.id(), now, reservationRequest))
                 .isInstanceOf(CustomException.class)
@@ -102,7 +102,7 @@ class ReservationServiceTest {
             ReservationRequest request = new ReservationRequest("김철수", today.plusDays(30), 2L, 1L);
             ReservationUpdateRequest reservationRequest = new ReservationUpdateRequest(today.plusDays(30), 3L);
 
-            ReservationResponse response = reservationService.save(now, request);
+            ReservationResponse response = reservationService.save(2L, now, request);
 
             assertThatCode(() -> reservationService.update(response.id(), now, reservationRequest))
                     .doesNotThrowAnyException();

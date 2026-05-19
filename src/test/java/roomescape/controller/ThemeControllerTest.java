@@ -6,6 +6,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +18,17 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class ThemeControllerTest {
+
+    private String sessionId;
+
+    @BeforeEach
+    void setUp() {
+        this.sessionId = RestAssured.given()
+                .when().post("/login")
+                .then()
+                .extract()
+                .sessionId();
+    }
 
     @Test
     @DisplayName("전체 테마 조회 API")
@@ -74,6 +87,7 @@ class ThemeControllerTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .pathParam("id", "ㅇㄴ")
                 .queryParam("date", "2026-04-29")
                 .when().get("/themes/{id}/available-times")

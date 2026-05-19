@@ -5,6 +5,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     COMMON_BAD_REQUEST("COMMON_400", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST),
 
+    AUTH_SESSION_NOT_FOUND("AUTH_401_1", "세션이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
+    AUTH_LOGIN_REQUIRED("AUTH_401_2", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
+    MEMBER_NOT_FOUND("MEMBER_404_1", "존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND),
+
     THEME_NAME_BLANK("THEME_400_1", "테마 이름은 비거나 공백일 수 없습니다.", HttpStatus.BAD_REQUEST),
     THEME_DESCRIPTION_BLANK("THEME_400_2", "테마 설명은 비거나 공백일 수 없습니다.", HttpStatus.BAD_REQUEST),
     THEME_THUMBNAIL_URL_BLANK("THEME_400_3", "테마 썸네일 URL은 비거나 공백일 수 없습니다.", HttpStatus.BAD_REQUEST),

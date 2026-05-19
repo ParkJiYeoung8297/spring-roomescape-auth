@@ -26,13 +26,13 @@ public class ReservationService {
     }
 
 
-    public ReservationResponse save(LocalDateTime now, ReservationRequest request) {
+    public ReservationResponse save(long memberId, LocalDateTime now, ReservationRequest request) {
         Time reservationTime = timeDao.findById(request.timeId());
         LocalDateTime time = LocalDateTime.of(request.date(), reservationTime.getStartAt());
         validateDateAndTimeNotPast(now,time);
 
         try{
-            Long id = reservationDao.save(request.name(), request.date(), request.timeId(), request.themeId());
+            Long id = reservationDao.save(memberId, request.name(), request.date(), request.timeId(), request.themeId());
             Reservation reservation = reservationDao.findById(id);
             return ReservationResponse.from(reservation);
         } catch (DuplicateKeyException e){
@@ -43,6 +43,14 @@ public class ReservationService {
     public ReservationResponse findById(long id) {
         Reservation reservation = reservationDao.findById(id);
         return ReservationResponse.from(reservation);
+    }
+
+
+
+    public List<ReservationResponse> findMyReservations(long id) {
+        return reservationDao.findByUserId(id).stream()
+                .map(ReservationResponse::from)
+                .toList();
     }
 
     public List<ReservationResponse> findAllByName(String username) {

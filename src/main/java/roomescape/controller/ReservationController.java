@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import roomescape.config.LoginMember;
+import roomescape.domain.Member;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.ReservationUpdateRequest;
@@ -35,13 +37,21 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
+    public ResponseEntity<ReservationResponse> createReservation(
+            @LoginMember Member member,
+            @Valid @RequestBody ReservationRequest request
+    ) {
         LocalDateTime now = LocalDateTime.now();
-        ReservationResponse response = reservationService.save(now, request);
+        ReservationResponse response = reservationService.save(member.getId(), now, request);
         URI location = URI.create("/reservations/" + response.id());
         return ResponseEntity
                 .created(location)
                 .body(response);
+    }
+
+    @GetMapping("/mine")
+    public List<ReservationResponse> myReservations(@LoginMember Member member) {
+        return reservationService.findMyReservations(member.getId());
     }
 
     @GetMapping("/{id}")
@@ -53,7 +63,8 @@ public class ReservationController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ReservationResponse> getReservations(@RequestParam String username) {
+    public List<ReservationResponse> getReservations(
+            @RequestParam String username) {
         return reservationService.findAllByName(username);
     }
 

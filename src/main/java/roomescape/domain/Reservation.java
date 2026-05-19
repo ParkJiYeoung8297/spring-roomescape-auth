@@ -7,18 +7,20 @@ import roomescape.exception.ErrorCode;
 
 public class Reservation {
     private final Long id;
+    private final Long memberId;
     private final String name;
     private final LocalDate date;
     private final Time time;
     private final Theme theme;
 
-    public Reservation(Long id, String name, LocalDate date, Time time, Theme theme) {
+    public Reservation(Long id, Long memberId, String name, LocalDate date, Time time, Theme theme) {
         validateName(name);
         validateDate(date);
         validateTime(time);
         validateTheme(theme);
 
         this.id = id;
+        this.memberId = memberId;
         this.name = name;
         this.date = date;
         this.time = time;

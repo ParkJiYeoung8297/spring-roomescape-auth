@@ -20,6 +20,7 @@ public class ReservationDao {
 
     private final RowMapper<Reservation> reservationRowMapper = (rs, rowNum) -> new Reservation(
             rs.getLong("id"),
+            rs.getLong("member_id"),
             rs.getString("name"),
             rs.getDate("date").toLocalDate(),
             new Time(rs.getLong("time_id"), rs.getTime("time_value").toLocalTime()),
@@ -33,9 +34,10 @@ public class ReservationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long save(String name, LocalDate date, Long timeId, Long themeId) {
+    public Long save(Long memberId, String name, LocalDate date, Long timeId, Long themeId) {
         return jdbcInsert.executeAndReturnKey(Map.of(
                 "name", name,
+                "member_id", memberId,
                 "date", date,
                 "time_id", timeId,
                 "theme_id", themeId
@@ -45,6 +47,7 @@ public class ReservationDao {
     public Reservation findById(Long id) {
         String sql = """
                 SELECT r.id, 
+                       r.member_id,
                        r.name, 
                        r.date,
                        t.id AS time_id, 
@@ -61,9 +64,30 @@ public class ReservationDao {
         return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
     }
 
+    public List<Reservation> findByUserId(long id) {
+        String sql = """
+                SELECT r.id, 
+                       r.member_id,
+                       r.name, 
+                       r.date,
+                       t.id AS time_id, 
+                       t.start_at AS time_value,
+                       th.id AS theme_id, 
+                       th.name AS theme_name, 
+                       th.description AS theme_description, 
+                       th.thumbnail_url AS theme_thumbnail
+                FROM reservation AS r
+                INNER JOIN reservation_time AS t ON r.time_id = t.id
+                INNER JOIN theme AS th ON r.theme_id = th.id
+                Where r.id = ?
+                """;
+        return jdbcTemplate.query(sql, reservationRowMapper,id);
+    }
+
     public List<Reservation> findAll() {
         String sql = """
                 SELECT r.id, 
+                       r.member_id,
                        r.name, 
                        r.date,
                        t.id AS time_id, 
@@ -82,6 +106,7 @@ public class ReservationDao {
     public List<Reservation> findByUserName(String username) {
         String sql = """
                 SELECT r.id, 
+                       r.member_id,
                        r.name, 
                        r.date,
                        t.id AS time_id, 
