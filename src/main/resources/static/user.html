@@ -688,6 +688,17 @@
 
 <script>
   const API = '';
+  const memberNames = {
+    1: '김철수',
+    2: '이영희',
+    3: '박민준',
+    4: '최수진',
+    5: '정다은',
+    6: '강현수',
+    7: '윤지원',
+    8: '임서준',
+    9: '한지아'
+  };
   let username = '';
   let selectedTheme = null;
   let selectedDate = null;
@@ -697,15 +708,19 @@
 
   function init() {
     username = localStorage.getItem('username');
-    if (!username) {
+    const memberId = localStorage.getItem('memberId');
+    if (!memberId) {
       window.location.href = '/index.html';
       return;
     }
+    username = memberNames[Number(memberId)] || username || `사용자 ${memberId}`;
+    localStorage.setItem('username', username);
     document.getElementById('headerName').textContent = username;
     switchSection('popular');
   }
 
   function logout() {
+    localStorage.removeItem('memberId');
     localStorage.removeItem('username');
     window.location.href = '/index.html';
   }
@@ -730,8 +745,18 @@
     }
   }
 
+  function redirectToLogin() {
+    localStorage.removeItem('memberId');
+    localStorage.removeItem('username');
+    window.location.href = '/index.html';
+  }
+
   async function fetchJson(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
     const res = await fetch(url, options);
+    if (res.status === 401) {
+      redirectToLogin();
+      throw new Error('로그인이 필요합니다.');
+    }
     if (!res.ok) {
       const error = await readErrorMessage(res, fallback);
       throw Object.assign(new Error(error.message), error);
@@ -742,6 +767,10 @@
 
   async function fetchEmpty(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
     const res = await fetch(url, options);
+    if (res.status === 401) {
+      redirectToLogin();
+      throw new Error('로그인이 필요합니다.');
+    }
     if (!res.ok) {
       const error = await readErrorMessage(res, fallback);
       throw Object.assign(new Error(error.message), error);
@@ -1064,11 +1093,7 @@
     document.getElementById('my-empty').style.display = 'none';
 
     try {
-      const reservations = await fetchJson(
-        `${API}/reservations?username=${encodeURIComponent(username)}`,
-        {},
-        '예약 목록을 불러올 수 없습니다.'
-      );
+      const reservations = await fetchJson(`${API}/reservations/mine`, {}, '예약 목록을 불러올 수 없습니다.');
 
       document.getElementById('my-loading').style.display = 'none';
 

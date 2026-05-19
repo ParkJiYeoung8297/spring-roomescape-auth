@@ -181,17 +181,18 @@
 <div class="card">
   <div class="logo">Mystery Experience</div>
   <h1 class="title">Room<span>Escape</span></h1>
-  <p class="subtitle">당신의 탈출을 기다리고 있습니다.<br>이름을 입력하고 방탈출을 시작하세요.</p>
+  <p class="subtitle">당신의 탈출을 기다리고 있습니다.<br>사용자 ID를 입력하고 방탈출을 시작하세요.</p>
   <div class="divider"></div>
 
-  <div class="error" id="error">이름을 입력해주세요.</div>
+  <div class="error" id="error">사용자 ID를 입력해주세요.</div>
 
-  <label for="username">이름</label>
+  <label for="memberId">사용자 ID</label>
   <input
     type="text"
-    id="username"
-    placeholder="홍길동"
-    maxlength="20"
+    id="memberId"
+    placeholder="1"
+    inputmode="numeric"
+    maxlength="10"
     autocomplete="off"
   />
 
@@ -200,6 +201,18 @@
 </div>
 
 <script>
+  const memberNames = {
+    1: '김철수',
+    2: '이영희',
+    3: '박민준',
+    4: '최수진',
+    5: '정다은',
+    6: '강현수',
+    7: '윤지원',
+    8: '임서준',
+    9: '한지아'
+  };
+
   // Generate twinkling stars
   const starsEl = document.getElementById('stars');
   for (let i = 0; i < 80; i++) {
@@ -218,20 +231,42 @@
     starsEl.appendChild(s);
   }
 
-  document.getElementById('username').addEventListener('keydown', e => {
+  document.getElementById('memberId').addEventListener('keydown', e => {
     if (e.key === 'Enter') enter();
   });
 
-  function enter() {
-    const name = document.getElementById('username').value.trim();
+  async function enter() {
+    const memberId = document.getElementById('memberId').value.trim();
     const err = document.getElementById('error');
-    if (!name) {
+    if (!memberId || !/^\d+$/.test(memberId)) {
+      err.textContent = '사용자 ID를 입력해주세요.';
       err.style.display = 'block';
       return;
     }
-    err.style.display = 'none';
-    localStorage.setItem('username', name);
-    window.location.href = '/user.html';
+
+    try {
+      err.style.display = 'none';
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId: Number(memberId) })
+      });
+
+      if (!response.ok) {
+        err.textContent = response.status === 404
+          ? '존재하지 않는 사용자 ID입니다.'
+          : '로그인에 실패했습니다.';
+        err.style.display = 'block';
+        return;
+      }
+
+      localStorage.setItem('memberId', memberId);
+      localStorage.setItem('username', memberNames[Number(memberId)] || `사용자 ${memberId}`);
+      window.location.href = '/user.html';
+    } catch (e) {
+      err.textContent = '로그인 요청을 처리할 수 없습니다.';
+      err.style.display = 'block';
+    }
   }
 </script>
 </body>
