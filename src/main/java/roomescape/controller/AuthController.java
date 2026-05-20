@@ -16,5 +16,13 @@ public class AuthController {
             @RequestBody LoginRequest request,
             HttpSession session) {
         session.setAttribute("loginMemberId", request.memberId());
+        System.out.println(session.getId());
+        System.out.println(session.getAttribute("loginMemberId"));
+    }
+
+    @PostMapping("/logout")
+    public void logout(
+            HttpSession session) {
+        session.invalidate();
     }
 }

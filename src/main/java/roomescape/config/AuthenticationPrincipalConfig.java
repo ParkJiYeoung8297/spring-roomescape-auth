@@ -25,11 +25,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
                         "/login",
                         "/logout",
                         "/themes/popular",
-                        "/themes/**",
-                        "/times/**",
-                        "/admin/**",
-                        "/reservations/**",
-                        "reservations",
                         "/index.html",
                         "/user.html",
                         "/"
@@ -39,7 +34,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
 
     @Override
-
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new LoginMemberArgumentResolver(memberRepository));
 
