@@ -546,6 +546,192 @@
     .confirm-row:last-of-type { border-bottom: none; }
     .confirm-row span:first-child { color: var(--muted); }
     .confirm-row span:last-child { font-weight: 600; }
+
+    @media (max-width: 760px) {
+      body {
+        padding-bottom: 78px;
+      }
+
+      header {
+        height: auto;
+        min-height: 58px;
+        padding: 10px 14px;
+        gap: 12px;
+      }
+
+      .logo {
+        font-size: 18px;
+      }
+
+      .header-right {
+        gap: 8px;
+      }
+
+      .username-badge {
+        max-width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .btn-logout {
+        min-height: 38px;
+        padding: 7px 10px;
+      }
+
+      .layout {
+        display: block;
+        min-height: auto;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 200;
+        width: 100%;
+        height: 68px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        padding: 8px 10px;
+        border-top: 1px solid var(--border);
+        border-right: none;
+        overflow: visible;
+      }
+
+      .nav-label {
+        display: none;
+      }
+
+      .nav-item {
+        justify-content: center;
+        flex-direction: column;
+        gap: 3px;
+        padding: 7px 4px;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .nav-icon {
+        font-size: 17px;
+      }
+
+      .main {
+        padding: 20px 14px 0;
+      }
+
+      .section-title {
+        font-size: 20px;
+      }
+
+      .section-desc {
+        margin-bottom: 20px;
+      }
+
+      .themes-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .theme-card img {
+        height: 150px;
+      }
+
+      .booking-steps {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        margin-bottom: 20px;
+      }
+
+      .step {
+        justify-content: center;
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+        font-size: 11px;
+      }
+
+      .step-arrow {
+        display: none;
+      }
+
+      .date-section,
+      .confirm-box {
+        max-width: none;
+        padding: 18px;
+      }
+
+      input[type="date"] {
+        max-width: none;
+        min-height: 46px;
+        font-size: 16px;
+      }
+
+      .time-slots {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .time-slot,
+      .btn {
+        min-height: 44px;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+
+      .btn-row .btn {
+        width: 100%;
+      }
+
+      .selected-theme-info {
+        align-items: flex-start;
+      }
+
+      .selected-theme-info img {
+        width: 72px;
+        height: 52px;
+      }
+
+      .reservation-list {
+        max-width: none;
+      }
+
+      .reservation-item {
+        align-items: flex-start;
+        padding: 14px;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .reservation-item img {
+        width: 72px;
+        height: 52px;
+      }
+
+      .reservation-info {
+        min-width: 0;
+      }
+
+      .reservation-actions {
+        width: 100%;
+      }
+
+      .reservation-actions .btn {
+        flex: 1;
+      }
+
+      .toast {
+        left: 14px;
+        right: 14px;
+        bottom: 84px;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -687,7 +873,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const API = '';
+  const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
+  const host = window.location.hostname || 'localhost';
+  const API = `${protocol}//${host}:8080`;
   const memberNames = {
     1: '김철수',
     2: '이영희',
@@ -721,7 +909,10 @@
 
   async function logout() {
     try {
-      await fetch('/logout', { method: 'POST' });
+      await fetch(`${API}/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
     } catch (e) {
       // 로컬 로그인 상태는 서버 요청 실패와 관계없이 정리한다.
     }
@@ -757,7 +948,11 @@
   }
 
   async function fetchJson(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
-    const res = await fetch(url, options);
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: options.headers
+    });
     if (res.status === 401) {
       redirectToLogin();
       throw new Error('로그인이 필요합니다.');
@@ -771,7 +966,11 @@
   }
 
   async function fetchEmpty(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
-    const res = await fetch(url, options);
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: options.headers
+    });
     if (res.status === 401) {
       redirectToLogin();
       throw new Error('로그인이 필요합니다.');
