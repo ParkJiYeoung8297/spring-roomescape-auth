@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.roomescape.mobile'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId 'com.roomescape.mobile'
+        minSdk 23
+        targetSdk 33
+        versionCode 1
+        versionName '1.0'
+    }
+}
