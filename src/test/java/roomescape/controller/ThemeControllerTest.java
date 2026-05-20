@@ -40,6 +40,7 @@ class ThemeControllerTest {
     void 전체_테마_조회_API() {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .sessionId(sessionId)
                 .when().get("/themes")
                 .then().log().all()
                 .statusCode(200)

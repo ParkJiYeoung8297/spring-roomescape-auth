@@ -32,7 +32,7 @@ public class ThemeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ThemeResponse> getAllThemes() {
+    public List<ThemeResponse> getAllThemes(@LoginMember Member member) {
         return themeService.getAllThemes();
     }
 

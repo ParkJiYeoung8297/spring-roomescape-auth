@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -173,6 +172,22 @@ class ReservationControllerTest {
                 .when().get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200);
+    }
+
+    @Test
+    void 로그인하지_않으면_예약할_수_없다() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", LocalDate.now().plusDays(1));
+        params.put("timeId", 1);
+        params.put("themeId", 1);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then()
+                .statusCode(401);
     }
 
 }

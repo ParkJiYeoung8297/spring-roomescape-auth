@@ -57,6 +57,7 @@ public class MissionStepTest {
         final long id = Long.parseLong(location.split("/")[2]);
 
         RestAssured.given().log().all()
+                .sessionId(sessionId)
                 .when().get("/admin/times")
                 .then().log().all()
                 .statusCode(200)
@@ -64,6 +65,7 @@ public class MissionStepTest {
 
         RestAssured.given().log().all()
                 .pathParam("id", id)
+                .sessionId(sessionId)
                 .when().delete("/admin/times/{id}")
                 .then().log().all()
                 .statusCode(204);

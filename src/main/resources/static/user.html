@@ -719,7 +719,12 @@
     switchSection('popular');
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await fetch('/logout', { method: 'POST' });
+    } catch (e) {
+      // 로컬 로그인 상태는 서버 요청 실패와 관계없이 정리한다.
+    }
     localStorage.removeItem('memberId');
     localStorage.removeItem('username');
     window.location.href = '/index.html';

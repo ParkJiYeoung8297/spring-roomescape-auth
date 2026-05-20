@@ -34,7 +34,7 @@ public class AdminTimeController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<TimeResponse> getTimes() {
+    public List<TimeResponse> getTimes(@LoginMember Member member) {
         return adminTimeService.findAll();
     }
 
