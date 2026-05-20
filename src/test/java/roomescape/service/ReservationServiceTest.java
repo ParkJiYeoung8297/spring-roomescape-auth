@@ -116,4 +116,41 @@ class ReservationServiceTest {
                     .doesNotThrowAnyException();
         }
 
+    @DisplayName("본인 예약이 아니면 수정할 수 없다.")
+    @Test
+    void 본인_예약이_아니면_수정할_수_없다() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+
+        Member otherMember = new Member(2L, "브라운");
+
+        ReservationRequest request =
+                new ReservationRequest(
+                        "김철수",
+                        today.plusDays(30),
+                        2L,
+                        1L
+                );
+
+        ReservationUpdateRequest updateRequest =
+                new ReservationUpdateRequest(
+                        today.plusDays(31),
+                        3L
+                );
+
+        ReservationResponse response =
+                reservationService.save(member.getId(), now, request);
+
+        assertThatThrownBy(() ->
+                reservationService.update(
+                        otherMember,
+                        response.id(),
+                        now,
+                        updateRequest
+                )
+        )
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorCode.AUTH_REQUIRED.getMessage());
+    }
+
 }
