@@ -59,15 +59,7 @@ public class ReservationController {
             @LoginMember Member member,
             @PathVariable long id
     ) {
-        return reservationService.findById(id);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<ReservationResponse> getReservations(
-            @LoginMember Member member,
-            @RequestParam String username) {
-        return reservationService.findAllByName(username);
+        return reservationService.findById(member, id);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -78,7 +70,7 @@ public class ReservationController {
             @Valid @RequestBody ReservationUpdateRequest request
     ) {
         LocalDateTime now = LocalDateTime.now();
-        reservationService.update(reservationId, now, request);
+        reservationService.update(member, reservationId, now, request);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -87,6 +79,6 @@ public class ReservationController {
             @LoginMember Member member,
             @PathVariable Long id) {
         LocalDateTime now = LocalDateTime.now();
-        reservationService.delete(now, id);
+        reservationService.delete(member, now, id);
     }
 }

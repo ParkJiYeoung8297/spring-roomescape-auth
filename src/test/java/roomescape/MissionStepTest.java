@@ -92,11 +92,10 @@ public class MissionStepTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .sessionId(sessionId)
-                .queryParam("username", "브라운")
-                .when().get("/reservations")
+                .when().get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("size()", is(5));
     }
 
     @Autowired

@@ -106,24 +106,6 @@ class ReservationControllerTest {
                 .statusCode(204);
     }
 
-    @DisplayName("사용자 예약 조회 API")
-    @Test
-    void 사용자_예약_조회_API() {
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-                .queryParam("username", "김철수")
-                .when().get("/reservations")
-                .then().log().all()
-                .statusCode(200)
-                .body("[0].id", is(1))
-                .body("[0].date", is("2026-04-29"))
-                .body("[0].themeName", is("공포의 저택"))
-                .body("[0].themeDescription", is("버려진 저택에서 탈출하라! 어둠 속에 숨겨진 비밀을 밝혀야 살 수 있다."))
-                .body("[0].themeThumbnailUrl", is("https://picsum.photos/seed/haunted/400/250"))
-                .body("[0].time", is("12:00"));
-    }
-
     @DisplayName("사용자 예약 추가 - 날짜 형식 예외 테스트")
     @Test
     void 사용자_예약_추가_날짜_형식_예외_테스트() {
