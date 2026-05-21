@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoomEscape - 관리자 로그인</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #080b12;
+      color: #f3f4f6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.94)),
+        radial-gradient(ellipse at 18% 18%, rgba(56, 189, 248, 0.16) 0%, transparent 42%),
+        radial-gradient(ellipse at 82% 76%, rgba(34, 197, 94, 0.12) 0%, transparent 44%);
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      background: rgba(9, 15, 28, 0.94);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 10px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.62),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: #38bdf8;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      color: #f3f4f6;
+      margin-bottom: 8px;
+    }
+
+    .title span { color: #38bdf8; }
+
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.09);
+      color: #86efac;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.45), transparent);
+      margin-bottom: 32px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #9ca3af;
+      text-transform: uppercase;
+      text-align: left;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      border-radius: 8px;
+      color: #f3f4f6;
+      font-size: 15px;
+      outline: none;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"]:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #38bdf8, #22c55e);
+      border: none;
+      border-radius: 8px;
+      color: #06111f;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .user-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #4b5563;
+      text-decoration: none;
+    }
+
+    .user-link:hover { color: #9ca3af; }
+
+    .error {
+      display: none;
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      color: #fca5a5;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      body { align-items: stretch; overflow-y: auto; padding: 18px; }
+      .card { align-self: center; padding: 36px 22px; border-radius: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">Operations Console</div>
+  <div class="mode-badge">Admin Access</div>
+	  <h1 class="title">Room<span>Escape</span></h1>
+  <p class="subtitle">관리자 ID를 입력하고 담당 매장 운영 화면으로 이동하세요.<br>사용자 로그인과 분리된 관리자 전용 입구입니다.</p>
+  <div class="divider"></div>
+
+  <div class="error" id="error">관리자 ID를 입력해주세요.</div>
+
+  <label for="adminMemberId">관리자 ID</label>
+  <input
+    type="text"
+    id="adminMemberId"
+    placeholder="10, 11, 12"
+    inputmode="numeric"
+    maxlength="10"
+    autocomplete="off"
+  />
+
+  <button class="btn-primary" onclick="enterAdmin()">관리자 입장</button>
+  <a href="/index.html" class="user-link">사용자 로그인으로 이동 →</a>
+</div>
+
+<script>
+  const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
+  const host = window.location.hostname || 'localhost';
+	  const API = `${protocol}//${host}:8080`;
+  const adminAccounts = {
+    10: '강남 관리자',
+    11: '잠실 관리자',
+    12: '부산 관리자'
+  };
+
+  document.getElementById('adminMemberId').addEventListener('keydown', e => {
+    if (e.key === 'Enter') enterAdmin();
+  });
+
+  async function enterAdmin() {
+    const memberId = document.getElementById('adminMemberId').value.trim();
+    const err = document.getElementById('error');
+    if (!memberId || !/^\d+$/.test(memberId)) {
+      err.textContent = '관리자 ID를 입력해주세요.';
+      err.style.display = 'block';
+      return;
+    }
+    if (!adminAccounts[Number(memberId)]) {
+      err.textContent = '관리자 계정 ID를 입력해주세요.';
+      err.style.display = 'block';
+      return;
+    }
+
+    try {
+      err.style.display = 'none';
+      const response = await fetch(`${API}/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId: Number(memberId) })
+      });
+
+      if (!response.ok) {
+        err.textContent = response.status === 404
+          ? '존재하지 않는 관리자 ID입니다.'
+          : '관리자 로그인에 실패했습니다.';
+        err.style.display = 'block';
+        return;
+      }
+
+      localStorage.setItem('adminMemberId', memberId);
+      localStorage.setItem('adminName', adminAccounts[Number(memberId)]);
+      window.location.href = '/admin.html';
+    } catch (e) {
+      err.textContent = '로그인 요청을 처리할 수 없습니다.';
+      err.style.display = 'block';
+    }
+  }
+</script>
+</body>
+</html>

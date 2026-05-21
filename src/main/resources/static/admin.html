@@ -377,7 +377,7 @@
     <span class="logo">Room<span>Escape</span></span>
     <span class="admin-badge">ADMIN</span>
   </div>
-  <a href="/index.html" class="btn-back">← 메인으로</a>
+  <button class="btn-back" onclick="logoutAdmin()">로그아웃</button>
 </header>
 
 <div class="tab-nav">
@@ -491,7 +491,37 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const API = '';
+  const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
+  const host = window.location.hostname || 'localhost';
+  const API = `${protocol}//${host}:8080`;
+
+  function initAdmin() {
+    if (!localStorage.getItem('adminMemberId')) {
+      window.location.href = '/admin-login.html';
+      return;
+    }
+    loadReservations();
+  }
+
+  async function logoutAdmin() {
+    try {
+      await fetch(`${API}/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (e) {
+      // 로컬 관리자 로그인 상태는 서버 요청 실패와 관계없이 정리한다.
+    }
+    localStorage.removeItem('adminMemberId');
+    localStorage.removeItem('adminName');
+    window.location.href = '/admin-login.html';
+  }
+
+  function redirectToAdminLogin() {
+    localStorage.removeItem('adminMemberId');
+    localStorage.removeItem('adminName');
+    window.location.href = '/admin-login.html';
+  }
 
   function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
@@ -514,7 +544,15 @@
   }
 
   async function fetchJson(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
-    const res = await fetch(url, options);
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: options.headers
+    });
+    if (res.status === 401) {
+      redirectToAdminLogin();
+      throw new Error('관리자 로그인이 필요합니다.');
+    }
     if (!res.ok) {
       const error = await readErrorMessage(res, fallback);
       throw Object.assign(new Error(error.message), error);
@@ -524,7 +562,15 @@
   }
 
   async function fetchEmpty(url, options = {}, fallback = '요청을 처리할 수 없습니다.') {
-    const res = await fetch(url, options);
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: options.headers
+    });
+    if (res.status === 401) {
+      redirectToAdminLogin();
+      throw new Error('관리자 로그인이 필요합니다.');
+    }
     if (!res.ok) {
       const error = await readErrorMessage(res, fallback);
       throw Object.assign(new Error(error.message), error);
@@ -741,7 +787,9 @@
   // Auto-ensure standard times (10:00~22:00) exist after theme creation
   async function ensureStandardTimes() {
     try {
-      const res = await fetch(`${API}/admin/times`);
+      const res = await fetch(`${API}/admin/times`, {
+        credentials: 'include'
+      });
       const existing = await res.json();
       const existingTimes = new Set(existing.map(t => t.startAt));
 
@@ -751,6 +799,7 @@
       await Promise.all(missing.map(t =>
         fetch(`${API}/admin/times`, {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ startAt: t })
         })
@@ -759,7 +808,7 @@
   }
 
   // Init: load reservations by default
-  loadReservations();
+  initAdmin();
 </script>
 </body>
 </html>

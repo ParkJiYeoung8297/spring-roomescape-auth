@@ -305,7 +305,8 @@
       margin-bottom: 8px;
     }
 
-    input[type="date"] {
+    input[type="date"],
+    select {
       padding: 10px 14px;
       background: rgba(255,255,255,0.04);
       border: 1px solid var(--border);
@@ -320,7 +321,11 @@
       margin-bottom: 20px;
     }
 
-    input[type="date"]:focus { border-color: var(--accent); }
+    select { max-width: 260px; }
+    option { background: #111827; color: var(--text); }
+
+    input[type="date"]:focus,
+    select:focus { border-color: var(--accent); }
 
     /* Time slots grid */
     .time-slots {
@@ -805,6 +810,8 @@
       <div class="booking-step" id="booking-step-2">
         <div class="date-section">
           <div class="selected-theme-info" id="selected-theme-info"></div>
+          <label for="booking-store">매장 선택</label>
+          <select id="booking-store"></select>
           <label for="booking-date">날짜 선택</label>
           <input type="date" id="booking-date" />
           <div class="btn-row">
@@ -847,6 +854,9 @@
           <div class="confirm-row">
             <span>예약자</span><span id="confirm-name">-</span>
           </div>
+          <div class="confirm-row">
+            <span>매장</span><span id="confirm-store">-</span>
+          </div>
           <div class="btn-row" id="confirm-actions" style="margin-top:20px">
             <button class="btn btn-accent" onclick="submitReservation()" id="submit-reservation-btn">예약 확정</button>
             <button class="btn btn-ghost" onclick="goToStep(3)">← 뒤로</button>
@@ -887,10 +897,17 @@
     8: '임서준',
     9: '한지아'
   };
+  const stores = [
+    { id: 1, name: '강남점' },
+    { id: 2, name: '홍대점' },
+    { id: 3, name: '잠실점' },
+    { id: 4, name: '부산점' }
+  ];
   let username = '';
   let selectedTheme = null;
   let selectedDate = null;
   let selectedTime = null;
+  let selectedStoreId = stores[0].id;
   let editingReservationId = null;
   let cachedThemes = null;
 
@@ -904,6 +921,7 @@
     username = memberNames[Number(memberId)] || username || `사용자 ${memberId}`;
     localStorage.setItem('username', username);
     document.getElementById('headerName').textContent = username;
+    renderStoreOptions();
     switchSection('popular');
   }
 
@@ -1091,6 +1109,7 @@
     selectedTheme = theme;
     document.getElementById('booking-date').removeAttribute('min');
     document.getElementById('booking-date').value = '';
+    document.getElementById('booking-store').value = String(selectedStoreId);
 
     const themeInfoHtml = `
       <img src="${theme.thumbnailUrl}" alt="${theme.name}" onerror="this.style.background='#1f2937'">
@@ -1107,6 +1126,7 @@
 
   async function goToStep3() {
     const dateInput = document.getElementById('booking-date');
+    selectedStoreId = Number(document.getElementById('booking-store').value);
     selectedDate = dateInput.value;
     document.getElementById('selected-date-label').textContent = `📅 ${formatDate(selectedDate)}`;
     selectedTime = null;
@@ -1170,7 +1190,8 @@
       themeName: selectedTheme.name,
       date: selectedDate,
       time: selectedTime?.startAt || '-',
-      name: username
+      name: username,
+      storeName: storeNameOf(selectedStoreId)
     });
     document.getElementById('confirm-id-row').style.display = 'none';
     goToStep(4);
@@ -1181,6 +1202,7 @@
     document.getElementById('confirm-date').textContent = formatDate(reservation.date);
     document.getElementById('confirm-time').textContent = reservation.time;
     document.getElementById('confirm-name').textContent = reservation.name || username;
+    document.getElementById('confirm-store').textContent = reservation.storeName || reservation.store || '-';
   }
 
   function showReservationComplete(reservation) {
@@ -1189,7 +1211,11 @@
     document.getElementById('confirm-box-title').textContent = '예약 완료';
     document.getElementById('confirm-id').textContent = reservation.id;
     document.getElementById('confirm-id-row').style.display = 'flex';
-    renderReservationSummary(reservation);
+    renderReservationSummary({
+      ...reservation,
+      name: username,
+      storeName: storeNameOf(selectedStoreId)
+    });
     document.getElementById('confirm-actions').innerHTML = `
       <button class="btn btn-accent" onclick="switchSection('my')">내 예약 보기</button>
       <button class="btn btn-ghost" onclick="switchSection('booking')">새 예약하기</button>
@@ -1210,7 +1236,8 @@
           name: username,
           date: selectedDate || null,
           timeId: selectedTime?.id || null,
-          themeId: selectedTheme.id
+          themeId: selectedTheme.id,
+          storeId: selectedStoreId
         })
       };
 
@@ -1287,6 +1314,7 @@
     selectedTheme = null;
     selectedDate = null;
     selectedTime = null;
+    selectedStoreId = stores[0].id;
     editingReservationId = null;
   }
 
@@ -1312,7 +1340,7 @@
           <img src="${r.themeThumbnailUrl}" alt="${r.themeName}" onerror="this.style.background='#1f2937'">
           <div class="reservation-info">
             <div class="reservation-theme">${r.themeName}</div>
-            <div class="reservation-meta">📅 ${formatDate(r.date)} &nbsp; ⏰ ${r.time}</div>
+            <div class="reservation-meta">📅 ${formatDate(r.date)} &nbsp; ⏰ ${r.time}${r.name ? ` &nbsp; 📍 ${r.name}` : ''}</div>
           </div>
           <div class="reservation-actions">
             <button class="btn btn-ghost" onclick="startReservationEdit(${JSON.stringify(r).replace(/"/g,'&quot;')})">수정</button>
@@ -1341,6 +1369,7 @@
       selectedTheme = theme;
       selectedDate = reservation.date;
       selectedTime = null;
+      selectedStoreId = storeIdOf(reservation.name);
 
       const themeInfoHtml = `
         <img src="${reservation.themeThumbnailUrl}" alt="${reservation.themeName}" onerror="this.style.background='#1f2937'">
@@ -1353,6 +1382,7 @@
       document.getElementById('selected-theme-info-2').innerHTML = themeInfoHtml;
       document.getElementById('booking-date').removeAttribute('min');
       document.getElementById('booking-date').value = reservation.date;
+      document.getElementById('booking-store').value = String(selectedStoreId);
 
       setBookingMode('edit');
       showBookingSection();
@@ -1383,6 +1413,22 @@
     const d = new Date(dateStr + 'T00:00:00');
     const days = ['일','월','화','수','목','금','토'];
     return `${dateStr} (${days[d.getDay()]})`;
+  }
+
+  function renderStoreOptions() {
+    const select = document.getElementById('booking-store');
+    select.innerHTML = stores.map(store => `
+      <option value="${store.id}">${store.name}</option>
+    `).join('');
+    select.value = String(selectedStoreId);
+  }
+
+  function storeNameOf(id) {
+    return stores.find(store => store.id === Number(id))?.name || '-';
+  }
+
+  function storeIdOf(name) {
+    return stores.find(store => store.name === name)?.id || stores[0].id;
   }
 
   init();

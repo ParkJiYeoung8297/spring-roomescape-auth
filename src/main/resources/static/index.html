@@ -74,6 +74,22 @@
       margin-bottom: 12px;
     }
 
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.08);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
     .title {
       font-size: 36px;
       font-weight: 800;
@@ -210,6 +226,7 @@
 
 <div class="card">
   <div class="logo">Mystery Experience</div>
+  <div class="mode-badge">User Portal</div>
   <h1 class="title">Room<span>Escape</span></h1>
   <p class="subtitle">당신의 탈출을 기다리고 있습니다.<br>사용자 ID를 입력하고 방탈출을 시작하세요.</p>
   <div class="divider"></div>
@@ -227,7 +244,7 @@
   />
 
   <button class="btn-primary" onclick="enter()">입장하기</button>
-  <a href="/admin.html" class="admin-link">관리자 페이지로 이동 →</a>
+  <a href="/admin-login.html" class="admin-link">관리자 로그인으로 이동 →</a>
 </div>
 
 <script>
@@ -274,6 +291,11 @@
     const err = document.getElementById('error');
     if (!memberId || !/^\d+$/.test(memberId)) {
       err.textContent = '사용자 ID를 입력해주세요.';
+      err.style.display = 'block';
+      return;
+    }
+    if (!memberNames[Number(memberId)]) {
+      err.textContent = '사용자 계정 ID를 입력해주세요.';
       err.style.display = 'block';
       return;
     }
