@@ -15,5 +15,8 @@ public record ReservationRequest(
         @NotNull(message = "시간을 입력해주세요.")
         Long timeId,
         @NotNull(message = "테마를 입력해주세요.")
-        Long themeId) {
+        Long themeId,
+        @NotNull(message = "장소를 입력해주세요.")
+        Long storeId) {
+
 }

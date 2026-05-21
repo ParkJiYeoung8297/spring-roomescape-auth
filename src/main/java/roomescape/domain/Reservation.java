@@ -12,12 +12,14 @@ public class Reservation {
     private final LocalDate date;
     private final Time time;
     private final Theme theme;
+    private final Store store;
 
-    public Reservation(Long id, Long memberId, String name, LocalDate date, Time time, Theme theme) {
+    public Reservation(Long id, Long memberId, String name, LocalDate date, Time time, Theme theme, Store store) {
         validateName(name);
         validateDate(date);
         validateTime(time);
         validateTheme(theme);
+        validateStore(store);
 
         this.id = id;
         this.memberId = memberId;
@@ -25,6 +27,7 @@ public class Reservation {
         this.date = date;
         this.time = time;
         this.theme = theme;
+        this.store = store;
     }
 
     private void validateName(String name) {
@@ -54,6 +57,11 @@ public class Reservation {
             throw new CustomException(ErrorCode.RESERVATION_THEME_NULL);
         }
     }
+    private void validateStore(Store store) {
+        if (store == null) {
+            throw new CustomException(ErrorCode.RESERVATION_STORE_NULL);
+        }
+    }
 
     public Long getId() {
         return id;
@@ -77,5 +85,9 @@ public class Reservation {
 
     public Theme getTheme() {
         return theme;
+    }
+
+    public Store getStore() {
+        return store;
     }
 }
