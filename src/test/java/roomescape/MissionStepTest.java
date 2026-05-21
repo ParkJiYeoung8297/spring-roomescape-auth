@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import roomescape.controller.ReservationController;
+import roomescape.utils.DtoHelper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -74,12 +75,7 @@ public class MissionStepTest {
     @Test
     void 예약과_시간_연결() {
         LocalDate now = LocalDate.now();
-
-        Map<String, Object> reservation = new HashMap<>();
-        reservation.put("name", "브라운");
-        reservation.put("date", now.plusDays(1));
-        reservation.put("timeId", 1);
-        reservation.put("themeId", 1);
+        Map<String, Object> reservation = DtoHelper.getReservationRequest(now);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

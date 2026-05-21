@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import roomescape.utils.DtoHelper;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -43,11 +44,7 @@ class ReservationControllerTest {
     @Test
     void 사용자_예약_추가_API() {
         LocalDate date = LocalDate.now();
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", date.plusDays(1));
-        params.put("timeId", 1);
-        params.put("themeId", 1);
+        Map<String, Object> params = DtoHelper.getReservationRequest(date);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -66,6 +63,7 @@ class ReservationControllerTest {
         params.put("date", "2025");
         params.put("timeId", 1);
         params.put("themeId", 1);
+        params.put("storeId", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -80,11 +78,7 @@ class ReservationControllerTest {
     @Test
     void 사용자_예약_삭제_API() {
         LocalDate date = LocalDate.now();
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", date.plusDays(1));
-        params.put("timeId", 1);
-        params.put("themeId", 1);
+        Map<String, Object> params = DtoHelper.getReservationRequest(date);
 
         final long id = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -114,6 +108,7 @@ class ReservationControllerTest {
         params.put("date", "2024-95-05");
         params.put("timeId", 1);
         params.put("themeId", 1);
+        params.put("storeId", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -134,6 +129,7 @@ class ReservationControllerTest {
         params.put("date", "2024-95-05");
         params.put("timeId", 1);
         params.put("themeId", 1);
+        params.put("storeId", 1);
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -158,12 +154,8 @@ class ReservationControllerTest {
 
     @Test
     void 로그인하지_않으면_예약할_수_없다() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "브라운");
-        params.put("date", LocalDate.now().plusDays(1));
-        params.put("timeId", 1);
-        params.put("themeId", 1);
-
+        LocalDate date = LocalDate.now();
+        Map<String, Object> params = DtoHelper.getReservationRequest(date);
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(params)
