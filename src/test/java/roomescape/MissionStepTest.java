@@ -76,7 +76,7 @@ public class MissionStepTest {
                 .when().get("/reservations/mine")
                 .then().log().all()
                 .statusCode(200)
-                .body("size()", is(5));
+                .body("size()", is(7));
     }
 
     @Autowired
