@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import roomescape.config.AdminOnly;
 import roomescape.config.LoginMember;
 import roomescape.domain.Member;
 import roomescape.dto.AdminReservationResponse;
@@ -16,6 +16,7 @@ import roomescape.service.AdminReservationService;
 
 @RequestMapping("/admin/reservations")
 @RestController
+@AdminOnly
 public class AdminReservationController {
     private final AdminReservationService adminReservationService;
 

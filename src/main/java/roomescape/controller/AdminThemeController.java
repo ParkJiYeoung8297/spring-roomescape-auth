@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import roomescape.config.AdminOnly;
 import roomescape.config.LoginMember;
 import roomescape.domain.Member;
 import roomescape.dto.ThemeRequest;
@@ -22,6 +23,7 @@ import roomescape.service.AdminThemeService;
 @RequestMapping("/admin/themes")
 @RestController
 @Validated
+@AdminOnly
 public class AdminThemeController {
     private final AdminThemeService adminThemeService;
 

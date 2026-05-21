@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import roomescape.config.AdminOnly;
 import roomescape.config.LoginMember;
 import roomescape.domain.Member;
 import roomescape.dto.TimeRequest;
@@ -25,17 +26,12 @@ import roomescape.service.AdminTimeService;
 @RequestMapping(("/admin/times"))
 @RestController
 @Validated
+@AdminOnly
 public class AdminTimeController {
     private final AdminTimeService adminTimeService;
 
     public AdminTimeController(AdminTimeService adminTimeService) {
         this.adminTimeService = adminTimeService;
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<TimeResponse> getTimes(@LoginMember Member member) {
-        return adminTimeService.findAll();
     }
 
     @PostMapping

@@ -7,7 +7,8 @@ public enum ErrorCode {
 
     AUTH_SESSION_NOT_FOUND("AUTH_401_1", "세션이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED),
     AUTH_LOGIN_REQUIRED("AUTH_401_2", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
-    AUTH_REQUIRED("AUTH_401_3", "권한이 필요합니다.", HttpStatus.UNAUTHORIZED),
+    AUTH_REQUIRED("AUTH_401_3", "인증이 필요합니다.", HttpStatus.UNAUTHORIZED),
+    FORBIDDEN("AUTH_403_1", "권한이 필요합니다.", HttpStatus.FORBIDDEN),
     MEMBER_NOT_FOUND("MEMBER_404_1", "존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND),
 
     THEME_NAME_BLANK("THEME_400_1", "테마 이름은 비거나 공백일 수 없습니다.", HttpStatus.BAD_REQUEST),

@@ -31,12 +31,6 @@ public class AdminTimeService {
 
     }
 
-    public List<TimeResponse> findAll() {
-        return timeDao.findAll().stream()
-                .map(TimeResponse::from)
-                .toList();
-    }
-
     public void delete(Long id) {
         try{
             timeDao.delete(id);
