@@ -42,34 +42,19 @@ public class MissionStepTest {
     }
 
     @Test
-    void 시간_관리_API() {
+    void 시간_관리_API_권한_없음_예외_테스트() {
         Map<String, String> params = new HashMap<>();
         params.put("startAt", "23:00");
 
-        final String location = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(params)
                 .sessionId(sessionId)
                 .when().post("/admin/times")
                 .then().log().all()
-                .statusCode(201)
+                .statusCode(403)
                 .extract()
                 .header("Location");
-        final long id = Long.parseLong(location.split("/")[2]);
-
-        RestAssured.given().log().all()
-                .sessionId(sessionId)
-                .when().get("/admin/times")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", is(14));
-
-        RestAssured.given().log().all()
-                .pathParam("id", id)
-                .sessionId(sessionId)
-                .when().delete("/admin/times/{id}")
-                .then().log().all()
-                .statusCode(204);
     }
 
     @Test

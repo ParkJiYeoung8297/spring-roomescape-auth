@@ -65,4 +65,10 @@ class ReservationTest {
         assertThatThrownBy(() -> new Reservation(1L, 2L, "브라운", LocalDate.of(2023, 8, 5), null, theme, store))
                 .isInstanceOf(CustomException.class);
     }
+
+    @Test
+    void 매장이_null이면_예외() {
+        assertThatThrownBy(() -> new Reservation(1L, 2L, "브라운", LocalDate.of(2023, 8, 5), time, theme, null))
+                .isInstanceOf(CustomException.class);
+    }
 }

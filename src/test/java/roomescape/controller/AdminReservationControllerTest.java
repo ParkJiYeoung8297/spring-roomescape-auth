@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import roomescape.utils.LoginHelper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,16 +25,7 @@ class AdminReservationControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("memberId", 1L);
-
-        this.sessionId = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/login")
-                .then()
-                .extract()
-                .sessionId();
+        sessionId = LoginHelper.loginMember(10L);
     }
 
     @DisplayName("모든 사용자의 예약 내역이 모두 조회되어야한다.")

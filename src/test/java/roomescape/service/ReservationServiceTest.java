@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import roomescape.domain.Member;
+import roomescape.domain.Role;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
 import roomescape.dto.ReservationUpdateRequest;
@@ -31,7 +32,7 @@ class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.member = new Member(1L, "김철수");
+        this.member = new Member(1L, "김철수", Role.of("USER"));
     }
 
     @DisplayName("예약 정상 테스트")
@@ -122,7 +123,7 @@ class ReservationServiceTest {
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = now.toLocalDate();
 
-        Member otherMember = new Member(2L, "브라운");
+        Member otherMember = new Member(2L, "브라운", Role.of("USER"));
 
         ReservationRequest request =
                 new ReservationRequest(

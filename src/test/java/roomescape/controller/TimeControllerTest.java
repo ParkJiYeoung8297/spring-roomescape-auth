@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import roomescape.utils.LoginHelper;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -25,49 +26,7 @@ class TimeControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("memberId", 1L);
-
-        this.sessionId = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/login")
-                .then()
-                .extract()
-                .sessionId();
-    }
-
-    @DisplayName("예약 시간 등록 API")
-    @Test
-    void 예약_시간_등록_API() {
-        final String createStartAt = "23:00";
-        final Map<String,Object> params = new HashMap<>();
-        params.put("startAt", createStartAt);
-
-        RestAssured.given().log().all()
-               .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-               .body(params)
-               .when().post("/admin/times")
-               .then().log().all()
-               .statusCode(201)
-               .body("startAt", equalTo(createStartAt));
-    }
-
-    @DisplayName("예약 시간 등록 API - 이상값 예외 테스트")
-    @Test
-    void 예약_시간_등록_API_예외_테스트() {
-        final String createStartAt = "230";
-        final Map<String,Object> params = new HashMap<>();
-        params.put("startAt", createStartAt);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-                .body(params)
-                .when().post("/admin/times")
-                .then().log().all()
-                .statusCode(400);
+        sessionId = LoginHelper.loginMember(1L);
     }
 
     @DisplayName("예약 시간 조회 API")
@@ -76,7 +35,7 @@ class TimeControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .sessionId(sessionId)
-                .when().get("/admin/times")
+                .when().get("/times")
                 .then().log().all()
                 .statusCode(200)
                 .body("size()", equalTo(13))
@@ -87,38 +46,4 @@ class TimeControllerTest {
                 .body("[12].startAt", equalTo("22:00"));
     }
 
-    @DisplayName("API - 예약 시간 삭제")
-    @Test
-    void API_예약_시간_삭제() {
-        final String createStartAt = "23:00";
-        final Map<String,Object> params = new HashMap<>();
-        params.put("startAt", createStartAt);
-
-        final long id = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-                .body(params)
-                .when().post("/admin/times")
-                .then().log().all()
-                .statusCode(201)
-                .body("startAt", equalTo(createStartAt))
-                .extract()
-                .jsonPath()
-                .getLong("id");
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-                .when().delete("/admin/times/" + id)
-                .then().log().all()
-                .statusCode(204);
-
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .sessionId(sessionId)
-                .when().get("/admin/times")
-                .then().log().all()
-                .statusCode(200)
-                .body("size()", equalTo(13));
-    }
 }

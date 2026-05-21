@@ -1,7 +1,5 @@
 package roomescape.controller;
 
-import static org.hamcrest.core.Is.is;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import roomescape.utils.DtoHelper;
+import roomescape.utils.LoginHelper;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -28,16 +27,7 @@ class ReservationControllerTest {
 
     @BeforeEach
     void setUp() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("memberId", 1L);
-
-        this.sessionId = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().post("/login")
-                .then()
-                .extract()
-                .sessionId();
+        sessionId = LoginHelper.loginMember(1L);
     }
 
     @DisplayName("사용자 예약 추가 API")
