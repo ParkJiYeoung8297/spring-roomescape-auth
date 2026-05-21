@@ -3,10 +3,12 @@ package roomescape.domain;
 public class Member {
     private final long id;
     private final String name;
+    private final Role role;
 
-    public Member(long id, String name) {
+    public Member(long id, String name, Role role) {
         this.id = id;
         this.name = name;
+        this.role = role;
     }
 
     public long getId() {
@@ -15,5 +17,9 @@ public class Member {
 
     public String getName() {
         return name;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

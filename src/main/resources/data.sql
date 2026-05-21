@@ -19,22 +19,23 @@ INSERT INTO theme (name, description, thumbnail_url) VALUES ('우주 정거장',
 INSERT INTO theme (name, description, thumbnail_url) VALUES ('마법사의 연구실', '미친 마법사의 연구실에서 탈출하라. 다음 실험 대상이 되기 전에!', 'https://picsum.photos/seed/wizard/400/250');
 INSERT INTO theme (name, description, thumbnail_url) VALUES ('탐정 사무소', '살인 사건의 유일한 용의자가 되었다. 진범을 찾아 무죄를 증명하라.', 'https://picsum.photos/seed/detective/400/250');
 
--- Members (IDs 1~9)
-INSERT INTO member (name) VALUES ('김철수');
-INSERT INTO member (name) VALUES ('이영희');
-INSERT INTO member (name) VALUES ('박민준');
-INSERT INTO member (name) VALUES ('최수진');
-INSERT INTO member (name) VALUES ('정다은');
-INSERT INTO member (name) VALUES ('강현수');
-INSERT INTO member (name) VALUES ('윤지원');
-INSERT INTO member (name) VALUES ('임서준');
-INSERT INTO member (name) VALUES ('한지아');
+-- Members (IDs 1~9: USER, ID 10: ADMIN)
+INSERT INTO member (name, role) VALUES ('김철수', 'USER');
+INSERT INTO member (name, role) VALUES ('이영희', 'USER');
+INSERT INTO member (name, role) VALUES ('박민준', 'USER');
+INSERT INTO member (name, role) VALUES ('최수진', 'USER');
+INSERT INTO member (name, role) VALUES ('정다은', 'USER');
+INSERT INTO member (name, role) VALUES ('강현수', 'USER');
+INSERT INTO member (name, role) VALUES ('윤지원', 'USER');
+INSERT INTO member (name, role) VALUES ('임서준', 'USER');
+INSERT INTO member (name, role) VALUES ('한지아', 'USER');
+INSERT INTO member (name, role) VALUES ('관리자', 'ADMIN');
 
 -- Stores (IDs 1~4)
-INSERT INTO store (name, member_id) VALUES ('강남점', 1);
-INSERT INTO store (name, member_id) VALUES ('홍대점', 2);
-INSERT INTO store (name, member_id) VALUES ('잠실점', 3);
-INSERT INTO store (name, member_id) VALUES ('부산점', 4);
+INSERT INTO store (name, member_id) VALUES ('강남점', 10);
+INSERT INTO store (name, member_id) VALUES ('홍대점', 10);
+INSERT INTO store (name, member_id) VALUES ('잠실점', 10);
+INSERT INTO store (name, member_id) VALUES ('부산점', 10);
 
 -- Reservations for popular theme ranking (range: today-8 ~ today-1)
 -- 공포의 저택 (theme 1) - 5 bookings → 1st popular
