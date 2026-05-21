@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import roomescape.domain.Member;
 import roomescape.domain.Reservation;
+import roomescape.domain.Role;
 import roomescape.domain.Time;
 import roomescape.dto.ReservationRequest;
 import roomescape.dto.ReservationResponse;
@@ -50,7 +51,7 @@ public class ReservationService {
 
 
     public List<ReservationResponse> findMyReservations(long userId) {
-        return reservationDao.findByUserId(userId).stream()
+        return reservationDao.findAllByUserId(userId).stream()
                 .map(ReservationResponse::from)
                 .toList();
     }

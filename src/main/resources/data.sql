@@ -19,7 +19,7 @@ INSERT INTO theme (name, description, thumbnail_url) VALUES ('우주 정거장',
 INSERT INTO theme (name, description, thumbnail_url) VALUES ('마법사의 연구실', '미친 마법사의 연구실에서 탈출하라. 다음 실험 대상이 되기 전에!', 'https://picsum.photos/seed/wizard/400/250');
 INSERT INTO theme (name, description, thumbnail_url) VALUES ('탐정 사무소', '살인 사건의 유일한 용의자가 되었다. 진범을 찾아 무죄를 증명하라.', 'https://picsum.photos/seed/detective/400/250');
 
--- Members (IDs 1~9: USER, ID 10: ADMIN)
+-- Members (IDs 1~9: USER, IDs 10~12: ADMIN)
 INSERT INTO member (name, role) VALUES ('김철수', 'USER');
 INSERT INTO member (name, role) VALUES ('이영희', 'USER');
 INSERT INTO member (name, role) VALUES ('박민준', 'USER');
@@ -29,17 +29,19 @@ INSERT INTO member (name, role) VALUES ('강현수', 'USER');
 INSERT INTO member (name, role) VALUES ('윤지원', 'USER');
 INSERT INTO member (name, role) VALUES ('임서준', 'USER');
 INSERT INTO member (name, role) VALUES ('한지아', 'USER');
-INSERT INTO member (name, role) VALUES ('관리자', 'ADMIN');
+INSERT INTO member (name, role) VALUES ('강남 관리자', 'ADMIN');
+INSERT INTO member (name, role) VALUES ('잠실 관리자', 'ADMIN');
+INSERT INTO member (name, role) VALUES ('부산 관리자', 'ADMIN');
 
 -- Stores (IDs 1~4)
 INSERT INTO store (name, member_id) VALUES ('강남점', 10);
 INSERT INTO store (name, member_id) VALUES ('홍대점', 10);
-INSERT INTO store (name, member_id) VALUES ('잠실점', 10);
-INSERT INTO store (name, member_id) VALUES ('부산점', 10);
+INSERT INTO store (name, member_id) VALUES ('잠실점', 11);
+INSERT INTO store (name, member_id) VALUES ('부산점', 12);
 
 -- Reservations for popular theme ranking (range: today-8 ~ today-1)
 -- 공포의 저택 (theme 1) - 5 bookings → 1st popular
-INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-04-29', 3, 1, 1);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-05-22', 3, 1, 1);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (2, '이영희', '2026-04-30', 5, 1, 1);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (3, '박민준', '2026-05-01', 7, 1, 1);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (4, '최수진', '2026-05-02', 4, 1, 1);
@@ -60,9 +62,18 @@ INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VAL
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (4, '최수진', '2026-05-03', 4, 2, 2);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (6, '강현수', '2026-05-05', 8, 2, 2);
 
--- Future reservations (김철수 has some upcoming bookings)
+-- Past reservations for history
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-05-10', 3, 1, 1);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (2, '이영희', '2026-05-11', 5, 2, 2);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-05-14', 7, 4, 4);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (3, '박민준', '2026-05-15', 9, 3, 3);
 INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (4, '최수진', '2026-05-16', 1, 1, 1);
+
+-- Current and future reservations for edit/delete tests
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-05-21', 1, 2, 1);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (1, '김철수', '2026-05-22', 2, 1, 1);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (2, '이영희', '2026-05-23', 4, 2, 2);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (3, '박민준', '2026-05-24', 5, 3, 3);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (4, '최수진', '2026-05-25', 6, 4, 4);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (5, '정다은', '2026-05-26', 7, 1, 1);
+INSERT INTO reservation (member_id, name, date, time_id, theme_id, store_id) VALUES (6, '강현수', '2026-05-27', 8, 2, 2);

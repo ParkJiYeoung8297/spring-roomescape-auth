@@ -72,7 +72,7 @@ public class ReservationDao {
         return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
     }
 
-    public List<Reservation> findByUserId(long id) {
+    public List<Reservation> findAllByUserId(long id) {
         String sql = """
                 SELECT r.id, 
                        r.member_id,
@@ -96,7 +96,7 @@ public class ReservationDao {
         return jdbcTemplate.query(sql, reservationRowMapper,id);
     }
 
-    public List<Reservation> findAll() {
+    public List<Reservation> findAllByOwnerId(Long ownerId) {
         String sql = """
                 SELECT r.id, 
                        r.member_id,
@@ -114,9 +114,9 @@ public class ReservationDao {
                 FROM reservation AS r
                 INNER JOIN reservation_time AS t ON r.time_id = t.id
                 INNER JOIN theme AS th ON r.theme_id = th.id
-                INNER JOIN store AS s ON r.store_id = s.id
+                INNER JOIN store AS s ON r.store_id = s.id AND s.member_id = ?
                 """;
-        return jdbcTemplate.query(sql, reservationRowMapper);
+        return jdbcTemplate.query(sql, reservationRowMapper, ownerId);
     }
 
     public List<Reservation> findByUserName(String username) {
