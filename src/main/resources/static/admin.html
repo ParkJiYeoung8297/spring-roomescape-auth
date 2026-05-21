@@ -50,6 +50,51 @@
       gap: 16px;
     }
 
+    .admin-context {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 2px;
+    }
+
+    .admin-profile {
+      display: grid;
+      gap: 2px;
+      min-width: 112px;
+    }
+
+    .admin-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .admin-context strong {
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .store-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .store-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
     .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
     .logo span { color: var(--accent); }
 
@@ -376,6 +421,16 @@
   <div class="header-left">
     <span class="logo">Room<span>Escape</span></span>
     <span class="admin-badge">ADMIN</span>
+    <div class="admin-context">
+      <div class="admin-profile">
+        <span class="admin-label">로그인 관리자</span>
+        <strong id="admin-name">관리자</strong>
+      </div>
+      <div class="admin-profile">
+        <span class="admin-label">담당 매장</span>
+        <span class="store-list" id="admin-stores"></span>
+      </div>
+    </div>
   </div>
   <button class="btn-back" onclick="logoutAdmin()">로그아웃</button>
 </header>
@@ -494,13 +549,36 @@
   const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
   const host = window.location.hostname || 'localhost';
   const API = `${protocol}//${host}:8080`;
+  const adminAccounts = {
+    10: '강남 관리자',
+    11: '잠실 관리자',
+    12: '부산 관리자'
+  };
+  const adminStoresById = {
+    10: ['강남점', '홍대점'],
+    11: ['잠실점'],
+    12: ['부산점']
+  };
 
   function initAdmin() {
     if (!localStorage.getItem('adminMemberId')) {
       window.location.href = '/admin-login.html';
       return;
     }
+    renderAdminContext();
     loadReservations();
+  }
+
+  function renderAdminContext() {
+    const adminMemberId = Number(localStorage.getItem('adminMemberId'));
+    const adminName = localStorage.getItem('adminName') || adminAccounts[adminMemberId] || '관리자';
+    const stores = JSON.parse(localStorage.getItem('adminStores') || JSON.stringify(adminStoresById[adminMemberId] || []));
+    localStorage.setItem('adminName', adminName);
+    localStorage.setItem('adminStores', JSON.stringify(stores));
+    document.getElementById('admin-name').textContent = adminName;
+    document.getElementById('admin-stores').innerHTML = stores.length
+      ? stores.map(store => `<span class="store-chip">${store}</span>`).join('')
+      : '<span class="store-chip">담당 매장 없음</span>';
   }
 
   async function logoutAdmin() {
@@ -514,12 +592,14 @@
     }
     localStorage.removeItem('adminMemberId');
     localStorage.removeItem('adminName');
+    localStorage.removeItem('adminStores');
     window.location.href = '/admin-login.html';
   }
 
   function redirectToAdminLogin() {
     localStorage.removeItem('adminMemberId');
     localStorage.removeItem('adminName');
+    localStorage.removeItem('adminStores');
     window.location.href = '/admin-login.html';
   }
 
@@ -627,7 +707,7 @@
   async function deleteReservation(id) {
     if (!confirm('이 예약을 삭제하시겠습니까?')) return;
     try {
-      await fetchEmpty(`${API}/reservations/${id}`, { method: 'DELETE' }, '삭제에 실패했습니다.');
+      await fetchEmpty(`${API}/admin/reservations/${id}`, { method: 'DELETE' }, '삭제에 실패했습니다.');
       document.getElementById(`admin-res-${id}`)?.remove();
       showToast('예약이 삭제되었습니다.');
 
@@ -726,7 +806,7 @@
     document.getElementById('times-empty').style.display = 'none';
 
     try {
-      const times = await fetchJson(`${API}/admin/times`, {}, '시간 목록을 불러올 수 없습니다.');
+      const times = await fetchJson(`${API}/times`, {}, '시간 목록을 불러올 수 없습니다.');
 
       document.getElementById('times-loading').style.display = 'none';
 
@@ -787,7 +867,7 @@
   // Auto-ensure standard times (10:00~22:00) exist after theme creation
   async function ensureStandardTimes() {
     try {
-      const res = await fetch(`${API}/admin/times`, {
+      const res = await fetch(`${API}/times`, {
         credentials: 'include'
       });
       const existing = await res.json();

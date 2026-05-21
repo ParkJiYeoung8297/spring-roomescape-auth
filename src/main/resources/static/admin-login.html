@@ -163,7 +163,7 @@
 <div class="card">
   <div class="logo">Operations Console</div>
   <div class="mode-badge">Admin Access</div>
-	  <h1 class="title">Room<span>Escape</span></h1>
+  <h1 class="title">Room<span>Escape</span></h1>
   <p class="subtitle">관리자 ID를 입력하고 담당 매장 운영 화면으로 이동하세요.<br>사용자 로그인과 분리된 관리자 전용 입구입니다.</p>
   <div class="divider"></div>
 
@@ -186,11 +186,16 @@
 <script>
   const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
   const host = window.location.hostname || 'localhost';
-	  const API = `${protocol}//${host}:8080`;
+  const API = `${protocol}//${host}:8080`;
   const adminAccounts = {
     10: '강남 관리자',
     11: '잠실 관리자',
     12: '부산 관리자'
+  };
+  const adminStores = {
+    10: ['강남점', '홍대점'],
+    11: ['잠실점'],
+    12: ['부산점']
   };
 
   document.getElementById('adminMemberId').addEventListener('keydown', e => {
@@ -230,6 +235,7 @@
 
       localStorage.setItem('adminMemberId', memberId);
       localStorage.setItem('adminName', adminAccounts[Number(memberId)]);
+      localStorage.setItem('adminStores', JSON.stringify(adminStores[Number(memberId)] || []));
       window.location.href = '/admin.html';
     } catch (e) {
       err.textContent = '로그인 요청을 처리할 수 없습니다.';
